@@ -41,7 +41,7 @@ thermo watch -n 10 --json         # 10 samples, one JSON object per line
 thermo pulse quit NAME|PID --yes  # stop a program pulse lists (apps quit like ⌘Q; others SIGTERM)
 thermo pulse restart NAME --yes   # quit and reopen an app, when pulse advises it
 thermo pulse history --since 6h --json   # what slowed the Mac down earlier (1h|6h|24h), and who
-thermo pulse chrome --watch 60 --json    # which Chrome page leaks or is biggest, duplicate tabs, hidden pages
+thermo pulse chrome [--watch 60] --json  # tabs and duplicates; --watch: which page leaks or is biggest
 thermo pulse chrome close URL --yes      # close one tab showing URL (--title to pick among copies)
 ```
 
@@ -53,8 +53,10 @@ when the user agrees. `advice.windows` says what happens to the windows: `restor
 in the browser's settings), `thermoReopensTabs` (Thermo saves the tabs and reopens them; typed
 input is lost) or `unknown` (tell the user to save first).
 
-`pulse chrome` measures every page twice, `--watch` seconds apart (memory per page needs
-chrome-use; without it, `mode: tabs` gives only the tab list and duplicates). `leaking[]` carries
+`pulse chrome` alone lists tabs and duplicates without touching the pages (`mode: tabs`).
+`--watch 60` (or `--measure` for one sample) measures memory per page; it attaches a debugger to
+each page, so Chrome shows "is being debugged" for a moment: only when the user asks (needs
+chrome-use). `leaking[]` carries
 `leak` (`listeners`: a certain page bug; `heap` / `nodes`: growing) and `advice`; `stale` counts
 dead chrome-use relay records (not pages, no memory; reloading/updating the chrome-use extension
 clears them), `hidden` real pages in no window; `gap` says where the
