@@ -39,7 +39,7 @@ thermo --json                     # every sensor group at once
 thermo temps | fans | power | battery         # one area
 thermo watch -n 10 --json         # 10 samples, one JSON object per line
 thermo pulse quit NAME|PID --yes  # stop a program pulse lists (apps quit like ⌘Q; others SIGTERM)
-thermo pulse restart NAME --yes   # quit and reopen an app (windows come back), when pulse advises it
+thermo pulse restart NAME --yes   # quit and reopen an app, when pulse advises it
 thermo pulse history --since 6h --json   # what slowed the Mac down earlier (1h|6h|24h), and who
 thermo pulse chrome --watch 60 --json    # which Chrome page leaks or is biggest, duplicate tabs, hidden pages
 thermo pulse chrome close URL --yes      # close one tab showing URL (--title to pick among copies)
@@ -49,12 +49,15 @@ Big apps carry `parts` (gpu, renderer, extension, network, utility…, each with
 and sometimes `advice` (e.g. Chrome up 31 h with ~2000 pages: restarting frees ~19 GB); `swapNote`
 explains swap in plain words. History is recorded by Thermo.app in the background (once a minute,
 24 h kept); `history` ranks programs by minutes at the top while the Mac struggled. Restart only
-when the user agrees.
+when the user agrees. `advice.windows` says what happens to the windows: `restoresItself` (checked
+in the browser's settings), `thermoReopensTabs` (Thermo saves the tabs and reopens them; typed
+input is lost) or `unknown` (tell the user to save first).
 
 `pulse chrome` measures every page twice, `--watch` seconds apart (memory per page needs
 chrome-use; without it, `mode: tabs` gives only the tab list and duplicates). `leaking[]` carries
-`leak` (`listeners`: a certain page bug; `heap` / `nodes`: growing) and `advice`; `hiddenText`
-counts pages in no window (automation; restarting the browser clears them); `gap` says where the
+`leak` (`listeners`: a certain page bug; `heap` / `nodes`: growing) and `advice`; `stale` counts
+dead chrome-use relay records (not pages, no memory; reloading/updating the chrome-use extension
+clears them), `hidden` real pages in no window; `gap` says where the
 rest of the browser's memory is. It reads metrics, titles and addresses only. Close a page only
 when the user picks it. `--app "Microsoft Edge"` for other Chromium browsers.
 
