@@ -39,7 +39,15 @@ thermo --json                     # every sensor group at once
 thermo temps | fans | power | battery         # one area
 thermo watch -n 10 --json         # 10 samples, one JSON object per line
 thermo pulse quit NAME|PID --yes  # stop a program pulse lists (apps quit like ⌘Q; others SIGTERM)
+thermo pulse restart NAME --yes   # quit and reopen an app (windows come back), when pulse advises it
+thermo pulse history --since 6h --json   # what slowed the Mac down earlier (1h|6h|24h), and who
 ```
+
+Big apps carry `parts` (gpu, renderer, extension, network, utility…, each with memory and uptime)
+and sometimes `advice` (e.g. Chrome up 31 h with ~2000 pages: restarting frees ~19 GB); `swapNote`
+explains swap in plain words. History is recorded by Thermo.app in the background (once a minute,
+24 h kept); `history` ranks programs by minutes at the top while the Mac struggled. Restart only
+when the user agrees.
 
 `pulse quit` refuses system processes, AI agent sessions and Thermo itself, and fails with a list
 when a name matches several programs (then use the pid).
