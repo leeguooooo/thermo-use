@@ -41,6 +41,8 @@ thermo watch -n 10 --json         # 10 samples, one JSON object per line
 thermo pulse quit NAME|PID --yes  # stop a program pulse lists (apps quit like ⌘Q; others SIGTERM)
 thermo pulse restart NAME --yes   # quit and reopen an app (windows come back), when pulse advises it
 thermo pulse history --since 6h --json   # what slowed the Mac down earlier (1h|6h|24h), and who
+thermo pulse chrome --watch 60 --json    # which Chrome page leaks or is biggest, duplicate tabs, hidden pages
+thermo pulse chrome close URL --yes      # close one tab showing URL (--title to pick among copies)
 ```
 
 Big apps carry `parts` (gpu, renderer, extension, network, utility…, each with memory and uptime)
@@ -48,6 +50,13 @@ and sometimes `advice` (e.g. Chrome up 31 h with ~2000 pages: restarting frees ~
 explains swap in plain words. History is recorded by Thermo.app in the background (once a minute,
 24 h kept); `history` ranks programs by minutes at the top while the Mac struggled. Restart only
 when the user agrees.
+
+`pulse chrome` measures every page twice, `--watch` seconds apart (memory per page needs
+chrome-use; without it, `mode: tabs` gives only the tab list and duplicates). `leaking[]` carries
+`leak` (`listeners`: a certain page bug; `heap` / `nodes`: growing) and `advice`; `hiddenText`
+counts pages in no window (automation; restarting the browser clears them); `gap` says where the
+rest of the browser's memory is. It reads metrics, titles and addresses only. Close a page only
+when the user picks it. `--app "Microsoft Edge"` for other Chromium browsers.
 
 `pulse quit` refuses system processes, AI agent sessions and Thermo itself, and fails with a list
 when a name matches several programs (then use the pid).
