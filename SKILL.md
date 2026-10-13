@@ -90,7 +90,7 @@ move tabs or change another agent's group. Existing browser group names are read
 To close a group, archive it: the CLI writes and verifies an owner-only local record before
 closing, rechecks each tab, protects current/pinned/audible/private/agent tabs, and reports each
 result. Protection flags require a connected compatible chrome-use relay; unavailable flags
-mean quick archive is disabled. Listing and grouping never attach a page debugger.
+mean quick archive is disabled. Listing and grouping never attach a page debugger. All connected Chrome profiles are read independently; each close is rechecked on the tab's own profile without changing any agent session or the default connection.
 
 Saved URLs can contain private data. Keep records local; summarize counts/titles, and expose
 URLs only when needed. Saved batches are in `~/Library/Application Support/Thermo/TabWorkspace/`.
