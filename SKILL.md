@@ -1,6 +1,6 @@
 ---
 name: thermo-use
-description: See how this Mac is doing and act on it through the Thermo app's `thermo` CLI — why it is slow (load, memory pressure and swap, thermal throttling, which program, which project and agent started it), temperatures, fans (including setting them), power and battery; disk space held by AI tools (old Claude Code / Codex / Gemini sessions, models, agent worktrees) and caches, with cleanup; and AI agent diagnostics (broken hooks, MCP servers, plugins, skills, launch agents, leaked processes) with fixes. Use when the user says the Mac is slow, laggy, hot, loud or out of disk space, asks what is eating CPU or memory, asks about temperatures, fans or battery, wants to clean up disk space or old AI sessions, asks whether their agents / MCP servers / hooks are healthy, wants Thermo's settings changed, or before something heavy (a build, a model run). In Chinese: 电脑卡 / 好卡 / 为什么慢 / 发热 / 好烫 / 风扇好响 / 风扇开到最大 / 谁在占 CPU / 内存不够 / 温度多少 / 电池 / 磁盘满了 / 清理磁盘 / 清理 AI 会话 / MCP 坏了 / hooks 有问题 / agent 诊断. macOS only.
+description: See how this Mac is doing and act on it through the Thermo app's `thermo` CLI — why it is slow (load, memory pressure and swap, thermal throttling, which program, which project and agent started it), temperatures, fans (including setting them), power and battery; disk space held by AI tools (old Claude Code / Codex / Gemini sessions, models, agent worktrees) and caches, with cleanup; and AI agent diagnostics (broken hooks, MCP servers, plugins, skills, launch agents, leaked processes) with fixes. Use when the user says the Mac is slow, laggy, hot, loud or out of disk space, asks what is eating CPU or memory, asks about temperatures, fans or battery, wants to clean up disk space or old AI sessions, asks whether their agents / MCP servers / hooks are healthy, wants Thermo's settings changed, or before something heavy (a build, a model run). In Chinese: 电脑卡 / 好卡 / 为什么慢 / 发热 / 好烫 / 风扇好响 / 风扇开到最大 / 谁在占 CPU / 内存不够 / 温度多少 / 电池 / 磁盘满了 / 清理磁盘 / 清理 AI 会话 / MCP 坏了 / hooks 有问题 / agent 诊断. Also use for saving and closing browser tabs, managing Thermo tab groups and reopening saved batches (标签太多 / 一键关闭标签 / 标签分组 / 保存标签 / 恢复标签). macOS only.
 ---
 
 # thermo-use — how this Mac is doing, and fixing it
@@ -65,6 +65,42 @@ when the user picks it. `--app "Microsoft Edge"` for other Chromium browsers.
 
 `pulse quit` refuses system processes, AI agent sessions and Thermo itself, and fails with a list
 when a name matches several programs (then use the pid).
+
+## Browser tab groups
+
+```bash
+thermo tabs list --json                  # every tab, ID, window, Thermo group, protection reason
+thermo tabs group Research --ids ID,ID --yes
+thermo tabs group --by-site --yes        # regroup the scoped tabs by website
+thermo tabs archive --group Research --dry-run --json
+thermo tabs archive --group Research --yes --json
+thermo tabs archive --name Later --all-windows --yes --json
+thermo tabs saved --json
+thermo tabs show UUID --json
+thermo tabs restore UUID --yes --json
+thermo tabs restore UUID --window WINDOW_ID --yes --json
+```
+
+Use current IDs from `tabs list`; default scope is the front browser window. `--window ID`,
+`--ids ID,ID` and `--group NAME` narrow the scope; use `--all-windows` only when the user asked
+for all windows. `--app "Microsoft Edge"` selects a different Chromium browser.
+
+Thermo groups are local organization, separate from native browser groups: grouping does not
+move tabs or change another agent's group. Existing browser group names are read when available.
+To close a group, archive it: the CLI writes and verifies an owner-only local record before
+closing, rechecks each tab, protects current/pinned/audible/private/agent tabs, and reports each
+result. Protection flags require a connected compatible chrome-use relay; unavailable flags
+mean quick archive is disabled. Listing and grouping never attach a page debugger.
+
+Saved URLs can contain private data. Keep records local; summarize counts/titles, and expose
+URLs only when needed. Saved batches are in `~/Library/Application Support/Thermo/TabWorkspace/`.
+They preserve web links and Thermo group names, not unsaved input or page state. Restoring skips
+already reopened pages. Unknown close/open results are not automatically retried: inspect the
+batch and current tabs; the App also offers saved links for manual recovery. If the original
+browser session ended, choose the correct destination window explicitly to avoid account/profile
+mix-ups. A requested bulk archive authorizes closing its eligible candidates after showing the
+concrete plan; do not ask permission again for every tab. These commands require the Thermo
+build that includes `tabs`; older releases will report an unknown command.
 
 ## Fans
 
