@@ -70,6 +70,12 @@ when a name matches several programs (then use the pid).
 
 ```bash
 thermo tabs list --json                  # every tab, ID, window, Thermo group, protection reason
+thermo tabs organize --dry-run --json    # preview native Chrome groups by website/custom rules
+thermo tabs organize --yes --json        # create the reviewed native groups
+thermo tabs auto on --yes                # opt in to grouping new tabs every minute while Thermo runs
+thermo tabs rule add github.com GitHub --color purple --yes
+thermo tabs organized --json             # native-grouping batches
+thermo tabs undo-organize UUID --yes      # undo unchanged members of one batch
 thermo tabs group Research --ids ID,ID --yes
 thermo tabs group --by-site --yes        # regroup the scoped tabs by website
 thermo tabs archive --group Research --dry-run --json
@@ -85,7 +91,14 @@ Use current IDs from `tabs list`; default scope is the front browser window. `--
 `--ids ID,ID` and `--group NAME` narrow the scope; use `--all-windows` only when the user asked
 for all windows. `--app "Microsoft Edge"` selects a different Chromium browser.
 
-Thermo groups are local organization, separate from native browser groups: grouping does not
+`tabs organize` creates native Chrome groups after a concrete dry-run. It preserves existing
+groups and skips current, pinned, audible, private, changed and agent/debugger tabs. Groups never
+cross a window or Chrome profile. Ordinary website groups need at least two background tabs;
+an explicit domain rule may group one. `tabs auto on` is opt-in and runs only while Thermo.app is
+running; it never closes tabs. Undo restores only unchanged members and never retries an unknown
+result. Native grouping needs the chrome-use extension 0.5.48 or newer.
+
+`tabs group` manages Thermo's local categories, separate from native browser groups: it does not
 move tabs or change another agent's group. Existing browser group names are read when available.
 To close a group, archive it: the CLI writes and verifies an owner-only local record before
 closing, rechecks each tab, protects current/pinned/audible/private/agent tabs, and reports each

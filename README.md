@@ -31,5 +31,13 @@ App and CLI share local tab groups and verified saved batches; current, pinned, 
 and agent tabs are protected. Thermo grouping does not rearrange the browser's native groups.
 Requires a Thermo build with the `tabs` command; compatible chrome-use metadata enables bulk closure.
 
+Native Chrome groups: preview with `thermo tabs organize --dry-run --json`, apply with `--yes`,
+and undo a batch with `thermo tabs undo-organize UUID --yes`. Optional `thermo tabs auto on --yes`
+groups new tabs every minute while Thermo runs. Existing groups and protected tabs stay unchanged;
+tabs never cross windows or Chrome profiles. Requires chrome-use extension 0.5.48 or newer.
+
 浏览器标签支持按网站或自定义名称分组、保存后批量关闭和恢复。App 与 CLI 共用本机记录，
 保留当前页、固定页、音频页、隐私页和 agent 使用的标签。Thermo 分组不改变浏览器原生分组。
+
+`thermo tabs organize --dry-run` 可预览 Chrome 原生标签组，确认后用 `--yes` 执行；支持按批次撤销，
+也可选择开启每分钟自动整理。已有标签组和受保护标签保持原样，不跨窗口或 Chrome 账号移动。
