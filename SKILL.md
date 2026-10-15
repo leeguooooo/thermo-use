@@ -36,9 +36,14 @@ or editor that started it), plus `quittable`.
 Reading memory numbers: always say which metric a number is. `memoryMetric` names it
 (`footprint` = what Activity Monitor shows, including compressed and swapped-out memory;
 `resident` = what is in RAM now, `residentKB`). Never compare a footprint with an RSS from `ps`.
-A program entry covers the processes in *that* group (`pids`), which may be split by project or
-owner and may not be every process with that name; before claiming a total ("48 copies use X"),
-count them with `thermo agents list processes` (or `ps`) and say what the number covers. Many
+A program entry is one app, or one command-line program in one folder, with every process of it
+there (`processCount`, `pids`); `elsewhere` sums the same program in other folders, and `units` /
+`selection` in the JSON say what each number and row covers. For every copy of one program across
+folders — per-process footprint and RSS, CPU, uptime, `ppid`, `owner`, and how many outlived
+their parent (`orphaned`) — run `thermo pulse inspect NAME --json` instead of `ps`. Thermo before
+1.1.26 counted only a row's bigger processes and had no `elsewhere`/`inspect`; check
+`thermo --version` (and that `command -v thermo` points into Thermo.app — a copied binary does not
+update with the app) before trusting a total. Many
 idle copies of a tool, or copies running for days, are a hint to check, not proof of a leak.
 
 ## Machine
@@ -50,6 +55,7 @@ thermo watch -n 10 --json         # 10 samples, one JSON object per line
 thermo pulse quit NAME|PID --yes  # stop a program pulse lists (apps quit like ⌘Q; others SIGTERM)
 thermo pulse restart NAME --yes   # quit and reopen an app, when pulse advises it
 thermo pulse history --since 6h --json   # what slowed the Mac down earlier (1h|6h|24h), and who
+thermo pulse inspect NAME|PID --json     # every copy of one program in every folder, per process
 thermo pulse chrome [--watch 60] --json  # tabs and duplicates; --watch: which page leaks or is biggest
 thermo pulse chrome close URL --yes      # close one tab showing URL (--title to pick among copies)
 ```
