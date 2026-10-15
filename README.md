@@ -10,10 +10,17 @@ curl -fsSL https://raw.githubusercontent.com/leeguooooo/thermo-use/main/install.
 thermo pulse --json
 ```
 
+With Homebrew: `brew install --cask leeguooooo/tap/thermo`, then run the installer above to link
+the CLI.
+
 The installer links the CLI that ships inside Thermo.app into `~/.local/bin` (as `thermo` and
 `thermo-use`). If Thermo is not installed it downloads the signed, notarized app from
 app.leeguoo.com and refuses anything not signed by the developer's team. The CLI updates with the
 app. macOS 13+, Apple Silicon and Intel.
+
+Also: undo cleanups (`thermo history`, `thermo clean restore`), a cleanup whitelist, keeping a
+closed laptop awake (`thermo awake`), app uninstall and leftovers, startup items, and Homebrew app
+updates (`thermo apps updates`).
 
 The agent skill is [SKILL.md](SKILL.md): reading is free; cleaning disk space, fan control and
 quitting programs only happen when the user asks.
@@ -23,6 +30,10 @@ quitting programs only happen when the user asks.
 Thermo 的命令行给 AI agent 用：一条 `thermo pulse --json` 就能知道电脑为什么卡（负载、内存压力、
 交换空间、是否降频、是哪个程序）、温度、风扇、功耗、电池，以及 AI 工具占了多少磁盘。安装脚本把
 Thermo.app 里自带的命令行链接到 `~/.local/bin`；没装 Thermo 时会从 app.leeguoo.com 下载并校验签名。
+也可以用 Homebrew 安装：`brew install --cask leeguooooo/tap/thermo`。
+
+还能撤销清理（`thermo history`、`thermo clean restore`）、设清理白名单、合盖不休眠（`thermo awake`）、
+卸载 App 与清理残留、管理开机启动项，以及通过 Homebrew 更新 App（`thermo apps updates`）。
 
 
 Browser tabs: `thermo tabs list --json`, `thermo tabs group NAME --ids ID,ID --yes`,
