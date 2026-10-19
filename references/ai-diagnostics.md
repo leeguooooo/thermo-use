@@ -46,6 +46,11 @@ unavailable results are unknown, not zero. Keep that fallback separate from a na
 
 ### Read the measured scope
 
+Label the representation being ranked. A zero returned-text count with `nonTextBlocks > 0`
+is not a zero-cost call: those blocks were excluded, and an older parser can place an
+unfamiliar text-block format there. Keep their full size and model delivery unknown;
+do not reinterpret the omitted content as measured text or media cost.
+
 - `context` does not connect to servers. Catalog descriptions, complete Skill bodies,
   cache copies and aliases are different views, not additive prompt or invoice totals.
   Cache presence does not establish what a running host loaded. An incomplete inventory
