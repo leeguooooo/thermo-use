@@ -25,9 +25,16 @@ updates (`thermo apps updates`).
 The agent skill is [SKILL.md](SKILL.md): reading is free; cleaning disk space, fan control and
 quitting programs only happen when the user asks.
 
-For MCP/Skill size, latency or token questions, the skill separates static context, local-log
-usage, active definition inspection and imported task evidence. It does not equate directory
-size with billed usage or a successful tool call with task acceptance.
+The entry routes tasks to focused references: [performance/hardware](references/performance.md),
+[browser tabs](references/browser-tabs.md), [storage/apps/history](references/storage-and-apps.md),
+and [AI diagnostics](references/ai-diagnostics.md). Read the relevant mode rather than every
+command family. MCP/Skill questions start from diagnostic metadata or logs; `pulse` is the
+performance entry, not a prerequisite for AI-tool analysis.
+
+AI diagnostics checks the chosen CLI's help before using optional flags. When supported,
+`agents usage --sort text|structured --json` declares its order. Older reports may be
+byte-ordered or lack structured/instruction observations; missing measurements remain unknown.
+Static definitions, observed representations and native request counters stay separate.
 
 ---
 
