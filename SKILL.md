@@ -251,7 +251,7 @@ does not answer those questions. Use the installed CLI's help/capabilities if a 
 is unavailable; do not keep guessing flags from a newer Skill.
 
 ```bash
-thermo agents context --agent codex --json   # static Skill/catalog/cache and definition scope
+thermo agents context --agent codex --json   # static Skill/catalog/cache and configured MCP scope
 thermo agents usage --agent codex --json     # observed calls from bounded local log reading
 thermo agents usage --agent codex --log-file /path/to/session.jsonl --json
 thermo agents inspect-all --agent codex --dry-run --json  # preview configured MCP targets
