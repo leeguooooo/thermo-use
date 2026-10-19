@@ -22,13 +22,15 @@ Also: undo cleanups (`thermo history`, `thermo clean restore`), a cleanup whitel
 closed laptop awake (`thermo awake`), app uninstall and leftovers, startup items, and Homebrew app
 updates (`thermo apps updates`).
 
-The agent skill is [SKILL.md](SKILL.md): reading is free; cleaning disk space, fan control and
+The agent skill is [SKILL.md](skills/thermo-use/SKILL.md): reading is free; cleaning disk space, fan control and
 quitting programs only happen when the user asks.
 
-The entry routes tasks to focused references: [performance/hardware](references/performance.md),
-[browser tabs](references/browser-tabs.md), [storage/apps/history](references/storage-and-apps.md),
-and [AI diagnostics](references/ai-diagnostics.md). Read the relevant mode rather than every
-command family. MCP/Skill questions start from diagnostic metadata or logs; `pulse` is the
+The entry routes tasks to focused references: [performance/hardware](skills/thermo-use/references/performance.md),
+[browser tabs](skills/thermo-use/references/browser-tabs.md), [storage/apps/history](skills/thermo-use/references/storage-and-apps.md),
+and [AI diagnostics](skills/thermo-use/references/ai-diagnostics.md). Read the relevant mode rather than every
+command family. Copy the complete `skills/thermo-use` folder, including `references/`, when
+installing the Skill manually. `install.sh` links the CLI; it does not copy Skill files into
+an agent. MCP/Skill questions start from diagnostic metadata or logs; `pulse` is the
 performance entry, not a prerequisite for AI-tool analysis.
 
 AI diagnostics checks the chosen CLI's help before using optional flags. When supported,
