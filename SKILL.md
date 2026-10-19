@@ -1,6 +1,12 @@
 ---
 name: thermo-use
-description: See how this Mac is doing and act on it through the Thermo app's `thermo` CLI — why it is slow (load, memory pressure and swap, thermal throttling, which program, which project and agent started it), temperatures, fans (including setting them), power and battery; disk space held by AI tools (old Claude Code / Codex / Gemini sessions, models, agent worktrees) and caches, with cleanup; and AI agent diagnostics (broken hooks, MCP servers, plugins, skills, launch agents, leaked processes) with fixes. Use when the user says the Mac is slow, laggy, hot, loud or out of disk space, asks what is eating CPU or memory, asks about temperatures, fans or battery, wants to clean up disk space or old AI sessions, asks whether their agents / MCP servers / hooks are healthy, wants Thermo's settings changed, wants an earlier cleanup undone or a list of what Thermo changed, wants the laptop to stay awake with the lid closed, wants apps uninstalled / app leftovers removed / startup items turned off / app updates installed, or before something heavy (a build, a model run). In Chinese: 电脑卡 / 好卡 / 为什么慢 / 发热 / 好烫 / 风扇好响 / 风扇开到最大 / 谁在占 CPU / 内存不够 / 温度多少 / 电池 / 磁盘满了 / 清理磁盘 / 清理 AI 会话 / 恢复刚才清理的 / 撤销清理 / Thermo 改了什么 / 合盖不休眠 / 卸载 App / 残留文件 / 开机启动项 / App 更新 / MCP 坏了 / hooks 有问题 / agent 诊断. Also use for saving and closing browser tabs, managing Thermo tab groups and reopening saved batches (标签太多 / 一键关闭标签 / 标签分组 / 保存标签 / 恢复标签). macOS only.
+description: >-
+  Inspect and operate this Mac through Thermo: performance, memory, temperatures,
+  fans, battery and disk; cleanup and recovery; apps, saved tabs and AI-agent
+  diagnostics. Use for a slow, hot, noisy or full Mac, Thermo settings/history,
+  app or startup tasks, tab groups, and MCP/Skill definition size, tokens,
+  observed calls, latency or errors. 中文：电脑卡、发热、磁盘满、清理与恢复、
+  标签分组、MCP/Skill 体积、token、耗时和诊断。macOS only.
 ---
 
 # thermo-use — how this Mac is doing, and fixing it
@@ -18,7 +24,9 @@ If `thermo` is not on PATH:
 It links the CLI from Thermo.app (installing the signed app from app.leeguoo.com if missing); the
 CLI updates with the app. Users who prefer Homebrew can install the app with
 `brew install --cask leeguooooo/tap/thermo` (then run the installer above to link the CLI). In the app: Settings → AI agents (thermo-use) does the same in one click.
-Every command takes `--json`; output is English (`THERMO_LANG=zh` for Chinese).
+Use `--json` where the installed command lists it in `--help` or `thermo capabilities --json`.
+`watch --json` is newline-delimited JSON; help and `--version` can be plain text on older builds.
+Output is English (`THERMO_LANG=zh` for Chinese).
 
 ## Start here
 
@@ -50,13 +58,17 @@ idle copies of a tool, or copies running for days, are a hint to check, not proo
 
 ```bash
 thermo --json                     # every sensor group at once
-thermo temps | fans | power | battery         # one area
+thermo temps --json               # temperatures
+thermo fans --json                # fan readings
+thermo power --json               # power
+thermo battery --json             # battery
 thermo watch -n 10 --json         # 10 samples, one JSON object per line
-thermo pulse quit NAME|PID --yes  # stop a program pulse lists (apps quit like ⌘Q; others SIGTERM)
+thermo pulse quit NAME_OR_PID --yes  # stop a program pulse lists (apps quit like ⌘Q; others SIGTERM)
 thermo pulse restart NAME --yes   # quit and reopen an app, when pulse advises it
 thermo pulse history --since 6h --json   # what slowed the Mac down earlier (1h|6h|24h), and who
-thermo pulse inspect NAME|PID --json     # every copy of one program in every folder, per process
-thermo pulse chrome [--watch 60] --json  # tabs and duplicates; --watch: which page leaks or is biggest
+thermo pulse inspect NAME_OR_PID --json     # every copy of one program in every folder, per process
+thermo pulse chrome --json             # tabs and duplicates, no page debugger
+thermo pulse chrome --watch 60 --json  # only for requested page-memory measurement
 thermo pulse chrome close URL --yes      # close one tab showing URL (--title to pick among copies)
 ```
 
@@ -153,7 +165,9 @@ thermo clean run ITEM#SESSION --yes          # just some sessions of a project
 thermo clean run ID… --dry-run    # the plan (paths, commands) without touching anything
 thermo clean log                  # what earlier cleanups removed
 thermo clean overview --json      # where the used space is: big places and their biggest folders
-thermo space [PATH] | space large | space dupes   # folder sizes, files over 100 MB, identical files
+thermo space /path/to/folder --json # folder sizes
+thermo space large --json         # files over 100 MB
+thermo space dupes --json         # identical files
 ```
 
 Developer caches (npm, pnpm, yarn, pip, uv, Homebrew, Go, Cargo…) are cleaned with the tool's own
@@ -176,8 +190,8 @@ Trash and cannot be restored; they regenerate. `empty-trash` is permanent: only 
 
 ```bash
 thermo clean whitelist --json               # current entries (paths and globs)
-thermo clean whitelist add PATH|GLOB…       # every cleanup skips it from now on
-thermo clean whitelist remove PATH|GLOB…
+thermo clean whitelist add PATH_OR_GLOB       # every cleanup skips it from now on
+thermo clean whitelist remove PATH_OR_GLOB
 ```
 
 Stored one per line in `~/Library/Application Support/Thermo/whitelist`; `rejected` lists entries
@@ -189,7 +203,7 @@ that were refused (e.g. too broad).
 thermo apps --json                          # installed apps, size, the files they keep in ~
 thermo apps uninstall NAME --dry-run        # every path that would move; then --yes
 thermo apps leftovers --json                # data of apps that are gone (untouched 30 days)
-thermo apps leftovers remove ID…|all --yes  # to the Trash
+thermo apps leftovers remove ID --dry-run --json # review the chosen leftover; then --yes
 thermo apps startup --json                  # user LaunchAgents and whether each starts at login
 thermo apps startup disable LABEL --dry-run # then --yes; `enable` turns it back on
 thermo apps updates --json                  # Homebrew app updates (--refresh-catalog to refresh)
@@ -229,6 +243,45 @@ Items carry `safety`: `safe` (regenerated), `review` (user data, goes to the Tra
 `group` (the project folder) and a note saying when it was last used and by what (agent session,
 editor, git). Scans take 10–60 s on a busy disk; `clean ai` is faster.
 
+## AI tool size, usage and task evidence
+
+Use this when the user asks how large MCP/Skill context is, which tools return the most,
+how long calls take, or which integrations need investigation. Configuration lint alone
+does not answer those questions. Use the installed CLI's help/capabilities if a command
+is unavailable; do not keep guessing flags from a newer Skill.
+
+```bash
+thermo agents context --agent codex --json   # static Skill/catalog/cache and definition scope
+thermo agents usage --agent codex --json     # observed calls from bounded local log reading
+thermo agents usage --agent codex --log-file /path/to/session.jsonl --json
+thermo agents inspect-all --agent codex --dry-run --json  # preview configured MCP targets
+thermo agents inspect SERVER --agent codex --timeout 10 --json
+thermo agents compare /path/to/records.json --json        # import existing task evidence
+```
+
+- `context` does not connect to servers. Catalog descriptions, complete Skill bodies,
+  cache copies and aliases are different views, not additive prompt or invoice totals.
+  Cache presence does not establish what a running host loaded. An incomplete inventory
+  is not proof that a plugin is absent: check host registration before adding a duplicate.
+- `usage` reads local conversation logs and exports aggregates, not raw prompts,
+  arguments or return bodies. Check `complete` and coverage before describing rankings;
+  unread/clipped logs can change them. Returned-text counts are not request costs.
+  Serialized-media and truncation markers mean the logged representation cannot establish
+  complete return size, image/audio token cost or model delivery. Keep request/cache
+  counters separate; do not allocate them to individual tools.
+- `inspect` starts the configured stdio server or connects to HTTP, then reads handshake
+  and tool definitions. It does not call business tools or log in. Preview scope before
+  a broad scan; report incomplete totals as unknown. A successful list is not business
+  acceptance; definition hints and explicit result errors are not overall tool quality.
+- `compare` only reads evaluator records; it does not launch models, tasks or tools.
+  Keep failed, timed-out and unverified runs. A tool's `isError:false` is not a task pass;
+  failed/missing post-run comparison checks must not turn into savings. Record format:
+  https://github.com/leeguooooo/thermo/blob/main/docs/ai-task-comparison.md
+
+A size ranking or failed check is a reason to investigate, not authorization to disable,
+uninstall or clean. Inspect the actual task evidence and use the relevant repair preview
+below only for changes the user requested. Keep raw logs and private URLs local.
+
 ## AI agents (Claude Code, Codex, Cursor, Gemini)
 
 ```bash
@@ -236,7 +289,9 @@ thermo agents --json                    # findings by area; items with their act
 thermo agents list [AREA]               # hooks | mcp | plugins | skills | statusline | launchd | processes
 thermo agents show NAME                 # one item: problems, suggestions, numbered actions with exact steps
 thermo agents fix --dry-run             # all bulk-safe automatic fixes (skips anything in use)
-thermo agents fix|uninstall|disable NAME --dry-run   # one item; then the same with --yes
+thermo agents fix NAME --dry-run         # one item; then the same with --yes
+thermo agents uninstall NAME --dry-run   # only a requested removal
+thermo agents disable NAME --dry-run     # only a requested disable
 thermo agents run NAME --action N --yes # action N from `show`
 ```
 

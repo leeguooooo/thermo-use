@@ -25,6 +25,10 @@ updates (`thermo apps updates`).
 The agent skill is [SKILL.md](SKILL.md): reading is free; cleaning disk space, fan control and
 quitting programs only happen when the user asks.
 
+For MCP/Skill size, latency or token questions, the skill separates static context, local-log
+usage, active definition inspection and imported task evidence. It does not equate directory
+size with billed usage or a successful tool call with task acceptance.
+
 ---
 
 Thermo 的命令行给 AI agent 用：一条 `thermo pulse --json` 就能知道电脑为什么卡（负载、内存压力、
