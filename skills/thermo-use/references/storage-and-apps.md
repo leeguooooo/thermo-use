@@ -73,5 +73,12 @@ thermo history show ID --json      # every item of one change
 Items carry `safety`: `safe` (regenerated), `review` (user data, goes to the Trash) or `risky`
 (worktrees with uncommitted work — only when the user names it). Project build output carries
 `group` (the project folder) and a note saying when it was last used and by what (agent session,
-editor, git). Scans take 10–60 s on a busy disk; `clean ai` is faster.
+editor, git). Scans take 10–180 s on a busy disk (default budget 180 s); `clean ai` is faster.
+A result with `cancelled: true` / `stopReason: "budget"` (exit 3) is a lower bound: the categories in
+`unfinishedCategories` are missing or partial, often `projects`, the biggest one. Rerun with
+`--budget 300` before telling the user what can be freed.
+
+Xcode and emulator leftovers: `xcode-device-support` lists device-symbol folders no paired device
+runs any more (`safe`); `simulator-device/UDID` and `android-avd/NAME` are simulators and Android
+emulators unused for 14 days (`review`; removal deletes the device and the apps in it).
 

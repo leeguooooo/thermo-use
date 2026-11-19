@@ -40,7 +40,8 @@ Output is English (`THERMO_LANG=zh` for Chinese).
 - **Browser tab lists, grouping, saving, closing or restoring:** read
   [browser tabs](references/browser-tabs.md).
 - **Disk scans, cleanup/recovery, uninstall, startup items, app updates or change history:**
-  read [storage and apps](references/storage-and-apps.md).
+  read [storage and apps](references/storage-and-apps.md). For a full disk, start with `thermo clean --json`
+  instead of `du` or a hand-written script: it knows what is safe to remove and how.
 
 Read only the reference relevant to the task. For an explicit CLI/package path supplied
 by the user, use that path consistently. Check its scoped help or capabilities before
